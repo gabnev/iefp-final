@@ -4,17 +4,17 @@ import Link from "next/link";
 import { animalsType } from "../../api/AnimalType";
 import { NextPageContext } from "next";
 
-export interface NameType {
+export interface NameProps {
   animals: animalsType[] | undefined;
 }
 
-const Name = ({ animals }: NameType) => {
-  // const router = useRouter();
+const Name = ({ animals }: NameProps) => {
+  const router = useRouter();
 
   return (
     <div>
-      <p>Race: {animals[0].race}</p>
-      <p>Name: {animals[0].name}</p>
+      <p>Race: {animals[0]?.race}</p>
+      <p>Name: {animals[0]?.name}</p>
       <Link href="/detail">
         <a>Back to list</a>
       </Link>
@@ -22,7 +22,14 @@ const Name = ({ animals }: NameType) => {
   );
 };
 
-Name.getInitialProps = async ({ query }: NextPageContext) => {
+interface MyNextPageContext extends NextPageContext {
+  query: {
+    race: string;
+    name: string;
+  };
+}
+
+Name.getInitialProps = async ({ query }: MyNextPageContext) => {
   const response = await fetch(
     "http://localhost:4001/animals?race=" + query.race + "&name=" + query.name
   );
